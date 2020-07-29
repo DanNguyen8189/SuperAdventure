@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine
 {
+    /*Class representing a living creature in the game (ex Players, Monsters)*/
     public class LivingCreature
     {
         public int CurrentHitPoints { get; set; }

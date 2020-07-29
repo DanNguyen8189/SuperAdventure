@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine
 {
+    /*A location in the game, with possible connected locations*/
     public class Location
     {
         public int ID { get; set; }
