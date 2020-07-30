@@ -36,6 +36,21 @@
             this.lblGold = new System.Windows.Forms.Label();
             this.lblExperience = new System.Windows.Forms.Label();
             this.lblLevel = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cboWeapons = new System.Windows.Forms.ComboBox();
+            this.cboPotions = new System.Windows.Forms.ComboBox();
+            this.btnUseWeapon = new System.Windows.Forms.Button();
+            this.btnUsePotion = new System.Windows.Forms.Button();
+            this.btnNorth = new System.Windows.Forms.Button();
+            this.btnEast = new System.Windows.Forms.Button();
+            this.btnSouth = new System.Windows.Forms.Button();
+            this.btnWest = new System.Windows.Forms.Button();
+            this.rtbLocation = new System.Windows.Forms.RichTextBox();
+            this.rtbMessages = new System.Windows.Forms.RichTextBox();
+            this.dvgInventory = new System.Windows.Forms.DataGridView();
+            this.dvgQuests = new System.Windows.Forms.DataGridView();
+            ((System.ComponentModel.ISupportInitialize)(this.dvgInventory)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dvgQuests)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -107,11 +122,166 @@
             this.lblLevel.Size = new System.Drawing.Size(0, 20);
             this.lblLevel.TabIndex = 7;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(617, 531);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(103, 20);
+            this.label5.TabIndex = 8;
+            this.label5.Text = "Select Action";
+            // 
+            // cboWeapons
+            // 
+            this.cboWeapons.FormattingEnabled = true;
+            this.cboWeapons.Location = new System.Drawing.Point(369, 559);
+            this.cboWeapons.Name = "cboWeapons";
+            this.cboWeapons.Size = new System.Drawing.Size(121, 28);
+            this.cboWeapons.TabIndex = 9;
+            // 
+            // cboPotions
+            // 
+            this.cboPotions.FormattingEnabled = true;
+            this.cboPotions.Location = new System.Drawing.Point(369, 593);
+            this.cboPotions.Name = "cboPotions";
+            this.cboPotions.Size = new System.Drawing.Size(121, 28);
+            this.cboPotions.TabIndex = 10;
+            // 
+            // btnUseWeapon
+            // 
+            this.btnUseWeapon.Location = new System.Drawing.Point(620, 559);
+            this.btnUseWeapon.Name = "btnUseWeapon";
+            this.btnUseWeapon.Size = new System.Drawing.Size(75, 23);
+            this.btnUseWeapon.TabIndex = 11;
+            this.btnUseWeapon.Text = "Use";
+            this.btnUseWeapon.UseVisualStyleBackColor = true;
+            this.btnUseWeapon.Click += new System.EventHandler(this.btnUseWeapon_Click);
+            // 
+            // btnUsePotion
+            // 
+            this.btnUsePotion.Location = new System.Drawing.Point(620, 593);
+            this.btnUsePotion.Name = "btnUsePotion";
+            this.btnUsePotion.Size = new System.Drawing.Size(75, 23);
+            this.btnUsePotion.TabIndex = 12;
+            this.btnUsePotion.Text = "Use";
+            this.btnUsePotion.UseCompatibleTextRendering = true;
+            this.btnUsePotion.UseVisualStyleBackColor = true;
+            this.btnUsePotion.Click += new System.EventHandler(this.btnUsePotion_Click);
+            // 
+            // btnNorth
+            // 
+            this.btnNorth.Location = new System.Drawing.Point(493, 433);
+            this.btnNorth.Name = "btnNorth";
+            this.btnNorth.Size = new System.Drawing.Size(75, 23);
+            this.btnNorth.TabIndex = 13;
+            this.btnNorth.Text = "North";
+            this.btnNorth.UseVisualStyleBackColor = true;
+            this.btnNorth.Click += new System.EventHandler(this.btnNorth_Click);
+            // 
+            // btnEast
+            // 
+            this.btnEast.Location = new System.Drawing.Point(573, 457);
+            this.btnEast.Name = "btnEast";
+            this.btnEast.Size = new System.Drawing.Size(75, 23);
+            this.btnEast.TabIndex = 14;
+            this.btnEast.Text = "East";
+            this.btnEast.UseVisualStyleBackColor = true;
+            this.btnEast.Click += new System.EventHandler(this.btnEast_Click);
+            // 
+            // btnSouth
+            // 
+            this.btnSouth.Location = new System.Drawing.Point(493, 487);
+            this.btnSouth.Name = "btnSouth";
+            this.btnSouth.Size = new System.Drawing.Size(75, 23);
+            this.btnSouth.TabIndex = 15;
+            this.btnSouth.Text = "South";
+            this.btnSouth.UseVisualStyleBackColor = true;
+            this.btnSouth.Click += new System.EventHandler(this.btnSouth_Click);
+            // 
+            // btnWest
+            // 
+            this.btnWest.Location = new System.Drawing.Point(412, 457);
+            this.btnWest.Name = "btnWest";
+            this.btnWest.Size = new System.Drawing.Size(75, 23);
+            this.btnWest.TabIndex = 16;
+            this.btnWest.Text = "West";
+            this.btnWest.UseVisualStyleBackColor = true;
+            this.btnWest.Click += new System.EventHandler(this.btnWest_Click);
+            // 
+            // rtbLocation
+            // 
+            this.rtbLocation.Location = new System.Drawing.Point(347, 19);
+            this.rtbLocation.Name = "rtbLocation";
+            this.rtbLocation.ReadOnly = true;
+            this.rtbLocation.Size = new System.Drawing.Size(360, 105);
+            this.rtbLocation.TabIndex = 17;
+            this.rtbLocation.Text = "";
+            // 
+            // rtbMessages
+            // 
+            this.rtbMessages.Location = new System.Drawing.Point(347, 130);
+            this.rtbMessages.Name = "rtbMessages";
+            this.rtbMessages.ReadOnly = true;
+            this.rtbMessages.Size = new System.Drawing.Size(360, 286);
+            this.rtbMessages.TabIndex = 18;
+            this.rtbMessages.Text = "";
+            // 
+            // dvgInventory
+            // 
+            this.dvgInventory.AllowUserToAddRows = false;
+            this.dvgInventory.AllowUserToDeleteRows = false;
+            this.dvgInventory.AllowUserToResizeColumns = false;
+            this.dvgInventory.AllowUserToResizeRows = false;
+            this.dvgInventory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dvgInventory.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dvgInventory.Enabled = false;
+            this.dvgInventory.Location = new System.Drawing.Point(16, 130);
+            this.dvgInventory.MultiSelect = false;
+            this.dvgInventory.Name = "dvgInventory";
+            this.dvgInventory.ReadOnly = true;
+            this.dvgInventory.RowHeadersVisible = false;
+            this.dvgInventory.RowHeadersWidth = 62;
+            this.dvgInventory.RowTemplate.Height = 28;
+            this.dvgInventory.Size = new System.Drawing.Size(312, 309);
+            this.dvgInventory.TabIndex = 19;
+            // 
+            // dvgQuests
+            // 
+            this.dvgQuests.AllowUserToAddRows = false;
+            this.dvgQuests.AllowUserToDeleteRows = false;
+            this.dvgQuests.AllowUserToResizeColumns = false;
+            this.dvgQuests.AllowUserToResizeRows = false;
+            this.dvgQuests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dvgQuests.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
+            this.dvgQuests.Enabled = false;
+            this.dvgQuests.Location = new System.Drawing.Point(16, 446);
+            this.dvgQuests.MultiSelect = false;
+            this.dvgQuests.Name = "dvgQuests";
+            this.dvgQuests.ReadOnly = true;
+            this.dvgQuests.RowHeadersVisible = false;
+            this.dvgQuests.RowHeadersWidth = 62;
+            this.dvgQuests.RowTemplate.Height = 28;
+            this.dvgQuests.Size = new System.Drawing.Size(312, 189);
+            this.dvgQuests.TabIndex = 20;
+            // 
             // SuperAdventure
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(713, 634);
+            this.Controls.Add(this.dvgQuests);
+            this.Controls.Add(this.dvgInventory);
+            this.Controls.Add(this.rtbMessages);
+            this.Controls.Add(this.rtbLocation);
+            this.Controls.Add(this.btnWest);
+            this.Controls.Add(this.btnSouth);
+            this.Controls.Add(this.btnEast);
+            this.Controls.Add(this.btnNorth);
+            this.Controls.Add(this.btnUsePotion);
+            this.Controls.Add(this.btnUseWeapon);
+            this.Controls.Add(this.cboPotions);
+            this.Controls.Add(this.cboWeapons);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.lblLevel);
             this.Controls.Add(this.lblExperience);
             this.Controls.Add(this.lblGold);
@@ -123,6 +293,8 @@
             this.Name = "SuperAdventure";
             this.Text = "My Game";
             this.Load += new System.EventHandler(this.SuperAdventure_Load);
+            ((System.ComponentModel.ISupportInitialize)(this.dvgInventory)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dvgQuests)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -138,6 +310,19 @@
         private System.Windows.Forms.Label lblGold;
         private System.Windows.Forms.Label lblExperience;
         private System.Windows.Forms.Label lblLevel;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.ComboBox cboWeapons;
+        private System.Windows.Forms.ComboBox cboPotions;
+        private System.Windows.Forms.Button btnUseWeapon;
+        private System.Windows.Forms.Button btnUsePotion;
+        private System.Windows.Forms.Button btnNorth;
+        private System.Windows.Forms.Button btnEast;
+        private System.Windows.Forms.Button btnSouth;
+        private System.Windows.Forms.Button btnWest;
+        private System.Windows.Forms.RichTextBox rtbLocation;
+        private System.Windows.Forms.RichTextBox rtbMessages;
+        private System.Windows.Forms.DataGridView dvgInventory;
+        private System.Windows.Forms.DataGridView dvgQuests;
     }
 }
 

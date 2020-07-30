@@ -43,7 +43,7 @@ namespace Engine
         public const int LOCATION_ID_BRIDGE = 8;
         public const int LOCATION_ID_SPIDER_FIELD = 9;
 
-        //static constructor (run the first time someone uses anything in the class)
+        //static constructor (runs the first time someone uses anything in the class)
         static World()
         {
             //populate our lists of things in the world
@@ -176,7 +176,7 @@ namespace Engine
             Locations.Add(spiderField);
         }
 
-        //methods to get values from our static lists
+        //methods to get values from our static lists (already instantiated objects!)
         public static Item ItemByID(int id)
         {
             foreach (Item item in Items)
