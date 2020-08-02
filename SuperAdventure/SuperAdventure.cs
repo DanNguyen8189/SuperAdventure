@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -300,12 +301,120 @@ namespace SuperAdventure
 
         private void btnUseWeapon_Click(object sender, EventArgs e)
         {
+            rtbMessages.Text += "Attacking " + _currentMonster.Name;
+            Weapon currentWeapon = (Weapon)cboWeapons.SelectedItem; 
 
+            int damageToMonster = Engine.RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
+            // Apply the damage to the monster's CurrentHitPoints
+            _currentMonster.CurrentHitPoints -= damageToMonster;
+
+            // Display message
+            rtbMessages.Text += "You hit the " + _currentMonster.Name + " for " + damageToMonster.ToString() + " points." + Environment.NewLine;
+
+
+            if (_currentMonster.CurrentHitPoints <= 0)
+            {
+                // monster defeated
+                winBattle();
+                updatePlayerStats();
+                UpdateInventoryListInUI();
+                //TODO "Move player to current location?"
+            }
+            else
+            {
+                MonsterAttack();
+            }
         }
 
         private void btnUsePotion_Click(object sender, EventArgs e)
         {
+            HealingPotion potion = (HealingPotion)cboPotions.SelectedItem;
+            _player.CurrentHitPoints += potion.AmountToHeal;
+            if (_player.CurrentHitPoints > _player.MaximumHitPoints)
+            {
+                _player.CurrentHitPoints = _player.MaximumHitPoints;
+            }
 
+            // remove potion from inventory
+            for (int i = 0; i < _player.Inventory.Count; i++)
+            {
+                if (_player.Inventory[i].Details.ID == potion.ID)
+                {
+                    if (_player.Inventory[i].Quantity > 1)
+                    {
+                        _player.Inventory[i].Quantity -= 1;
+                    }
+                    else
+                    {
+                        _player.Inventory.RemoveAt(i);
+                    }
+                    break;
+                }
+            }
+            UpdatePotionListInUI();
+            MonsterAttack();
+        }
+
+        private void winBattle()
+        {
+            rtbMessages.Text += "You've defeated " + _currentMonster.Name;
+            
+            //give player rewards
+            _player.ExperiencePoints += _currentMonster.RewardExperiencePoints;
+            _player.Gold += _currentMonster.RewardGold;
+
+            // Collect chance loot from loot table
+            List<LootItem> lootCollected = new List<LootItem>();
+            int rngNumber = 0;
+            foreach (LootItem li in _currentMonster.LootTable)
+            {
+                rngNumber = Engine.RandomNumberGenerator.NumberBetween(0, 100);
+                if (rngNumber <= li.DropPercentage)
+                {
+                    lootCollected.Add(li);
+                }
+            }
+            foreach (LootItem li in lootCollected)
+            {
+                bool playerHasItem = false;
+                foreach (InventoryItem ii in _player.Inventory)
+                {
+                    if (ii.Details.ID == li.Details.ID)
+                    {
+                        ii.Quantity += 1;
+                    }
+                }
+                if (playerHasItem == false)
+                {
+                    // player doesn't have it yet, add it to their inventory
+                    Item standardItem = World.ItemByID(li.Details.ID);
+                    _player.Inventory.Add(new InventoryItem(standardItem, 1));
+                }
+                rtbMessages.Text += "You've received " + li.Details.Name;
+            }
+        }
+
+        void updatePlayerStats()
+        {
+            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
+            lblGold.Text = _player.Gold.ToString();
+            lblExperience.Text = _player.ExperiencePoints.ToString();
+            lblLevel.Text = _player.Level.ToString();
+        }
+
+        void MonsterAttack()
+        {
+            // monster attacks
+            rtbMessages.Text += _currentMonster.Name;
+            int damageToPlayer = _currentMonster.MaximumDamage;
+            _player.CurrentHitPoints -= damageToPlayer;
+            updatePlayerStats();
+            if (_player.CurrentHitPoints <= 0)
+            {
+                // player defeated
+                rtbMessages.Text += "You've been defeated!";
+                MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+            }
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace Engine
 {
-    class RandomNumberGenerator
+    public class RandomNumberGenerator
     {
         private static readonly RNGCryptoServiceProvider _generator = new RNGCryptoServiceProvider();
 
