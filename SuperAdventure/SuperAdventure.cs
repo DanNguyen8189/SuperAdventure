@@ -22,7 +22,7 @@ namespace SuperAdventure
         {
             InitializeComponent();
 
-            _player = new Player(10, 10, 20, 0, 1);
+            _player = new Player(10, 10, 20, 0);
             MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             _player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
 
@@ -59,6 +59,7 @@ namespace SuperAdventure
             if (!_player.HasRequiredItemToEnterThisLocation(newLocation))
             {
                 rtbMessages.Text += "You must have a " + newLocation.ItemRequiredToEnter.Name + " to enter this location." + Environment.NewLine;
+                ScrollToBottomOfMessages();
                 return;
             }
 
@@ -100,28 +101,7 @@ namespace SuperAdventure
                         // The player has all items required to complete the quest
                         if (playerHasAllItemsToCompleteQuest)
                         {
-                            // Display message
-                            rtbMessages.Text += Environment.NewLine;
-                            rtbMessages.Text += "You just completed the '" + newLocation.QuestAvailableHere.Name + "' quest." + Environment.NewLine;
-
-                            // Remove quest items from inventory
-                            _player.RemoveQuestCompletionItems(newLocation.QuestAvailableHere);
-
-                            // Give quest rewards
-                            rtbMessages.Text += "You received: " + Environment.NewLine;
-                            rtbMessages.Text += newLocation.QuestAvailableHere.RewardExperiencePoints.ToString() + " experience points" + Environment.NewLine;
-                            rtbMessages.Text += newLocation.QuestAvailableHere.RewardGold.ToString() + " gold" + Environment.NewLine;
-                            rtbMessages.Text += newLocation.QuestAvailableHere.RewardItem.Name + Environment.NewLine;
-                            rtbMessages.Text += Environment.NewLine;
-
-                            _player.ExperiencePoints += newLocation.QuestAvailableHere.RewardExperiencePoints;
-                            _player.Gold += newLocation.QuestAvailableHere.RewardGold;
-
-                            // Add the reward item to the player's inventory
-                            _player.AddItemToInventory(newLocation.QuestAvailableHere.RewardItem);
-
-                            // Mark the quest as completed
-                            _player.MarkQuestCompleted(newLocation.QuestAvailableHere);
+                            completeQuest(newLocation);
                         }
                     }
                 }
@@ -311,7 +291,6 @@ namespace SuperAdventure
             // Display message
             rtbMessages.Text += "You hit the " + _currentMonster.Name + " for " + damageToMonster.ToString() + " points." + Environment.NewLine;
 
-
             if (_currentMonster.CurrentHitPoints <= 0)
             {
                 // monster defeated
@@ -425,6 +404,34 @@ namespace SuperAdventure
             }*/
         }
 
+        void completeQuest(Location newLocation)
+        {
+            // Display message
+            rtbMessages.Text += Environment.NewLine;
+            rtbMessages.Text += "You just completed the '" + newLocation.QuestAvailableHere.Name + "' quest." + Environment.NewLine;
+
+            // Remove quest items from inventory
+            _player.RemoveQuestCompletionItems(newLocation.QuestAvailableHere);
+
+            // Give quest rewards
+            rtbMessages.Text += "You received: " + Environment.NewLine;
+            rtbMessages.Text += newLocation.QuestAvailableHere.RewardExperiencePoints.ToString() + " experience points" + Environment.NewLine;
+            rtbMessages.Text += newLocation.QuestAvailableHere.RewardGold.ToString() + " gold" + Environment.NewLine;
+            rtbMessages.Text += newLocation.QuestAvailableHere.RewardItem.Name + Environment.NewLine;
+            rtbMessages.Text += Environment.NewLine;
+
+            _player.ExperiencePoints += newLocation.QuestAvailableHere.RewardExperiencePoints;
+            _player.Gold += newLocation.QuestAvailableHere.RewardGold;
+
+            // Add the reward item to the player's inventory
+            _player.AddItemToInventory(newLocation.QuestAvailableHere.RewardItem);
+
+            // Mark the quest as completed
+            _player.MarkQuestCompleted(newLocation.QuestAvailableHere);
+            updatePlayerStats();
+        }
+    
+
         /* Function to update player stats and inventory controls */
         void updatePlayerStats()
         {
@@ -448,6 +455,24 @@ namespace SuperAdventure
                 rtbMessages.Text += "You've been defeated!";
                 MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             }
+        }
+
+        private void rtbMessages_TextChanged(object sender, EventArgs e)
+        {
+            // auto-scroll to the bottom
+            rtbMessages.SelectionStart = rtbMessages.Text.Length;
+            rtbMessages.ScrollToCaret();
+        }
+
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+        /* Function to scroll to the bottom of the rich text boax so it's easier for the player */
+        private void ScrollToBottomOfMessages()
+        {
+            rtbMessages.SelectionStart = rtbMessages.Text.Length;
+            rtbMessages.ScrollToCaret();
         }
     }
 }
