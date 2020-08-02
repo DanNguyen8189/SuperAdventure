@@ -318,7 +318,11 @@ namespace SuperAdventure
                 winBattle();
                 updatePlayerStats();
                 UpdateInventoryListInUI();
-                //TODO "Move player to current location?"
+                UpdateWeaponListInUI();
+                UpdatePotionListInUI();
+
+                // Move player to current location (to heal player and create a new monster to fight)
+                MoveTo(_player.CurrentLocation);
             }
             else
             {
@@ -351,6 +355,8 @@ namespace SuperAdventure
                     break;
                 }
             }
+            // Display message
+            rtbMessages.Text += "You drink a " + potion.Name + Environment.NewLine;
             UpdatePotionListInUI();
             MonsterAttack();
         }
@@ -374,6 +380,18 @@ namespace SuperAdventure
                     lootCollected.Add(li);
                 }
             }
+            /* Make sure player gets at least one item */
+            if (lootCollected.Count == 0)
+            {
+                foreach (LootItem li in _currentMonster.LootTable)
+                {
+                    if (li.IsDefaultItem)
+                    {
+                        lootCollected.Add(li);
+                        break;
+                    }
+                }
+            }
             foreach (LootItem li in lootCollected)
             {
                 bool playerHasItem = false;
@@ -382,18 +400,32 @@ namespace SuperAdventure
                     if (ii.Details.ID == li.Details.ID)
                     {
                         ii.Quantity += 1;
+                        playerHasItem = true;
                     }
                 }
                 if (playerHasItem == false)
                 {
                     // player doesn't have it yet, add it to their inventory
-                    Item standardItem = World.ItemByID(li.Details.ID);
-                    _player.Inventory.Add(new InventoryItem(standardItem, 1));
+                    _player.Inventory.Add(new InventoryItem(li.Details, 1));
                 }
-                rtbMessages.Text += "You've received " + li.Details.Name;
+                rtbMessages.Text += "You've received " + li.Details.Name + Environment.NewLine;
             }
+            // If no items were randomly selected, then add the default loot item(s).
+            /*if (lootCollected.Count == 0)
+            {
+                foreach (LootItem li in _currentMonster.LootTable)
+                {
+                    if (li.IsDefaultItem)
+                    {
+                        _player.Inventory.Add(new InventoryItem(li.Details, 1));
+                        rtbMessages.Text += "You've received " + li.Details.Name;
+                        break;
+                    }
+                }
+            }*/
         }
 
+        /* Function to update player stats and inventory controls */
         void updatePlayerStats()
         {
             lblHitPoints.Text = _player.CurrentHitPoints.ToString();
@@ -402,11 +434,12 @@ namespace SuperAdventure
             lblLevel.Text = _player.Level.ToString();
         }
 
+        /* Function for monster attack */
         void MonsterAttack()
         {
             // monster attacks
-            rtbMessages.Text += _currentMonster.Name;
-            int damageToPlayer = _currentMonster.MaximumDamage;
+            int damageToPlayer = Engine.RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
+            rtbMessages.Text += _currentMonster.Name + " attacks and deals " + damageToPlayer.ToString() + " damage!" + Environment.NewLine;
             _player.CurrentHitPoints -= damageToPlayer;
             updatePlayerStats();
             if (_player.CurrentHitPoints <= 0)
