@@ -36,30 +36,23 @@ namespace Engine
             }
 
             // See if the player has the required item in their inventory
-            foreach (InventoryItem ii in Inventory)
+            /* foreach (InventoryItem ii in Inventory)
             {
                 if (ii.Details.ID == location.ItemRequiredToEnter.ID)
                 {
                     // We found the required item, so return "true"
                     return true;
                 }
-            }
+            }*/
+            return Inventory.Exists(ii => ii.Details.ID == location.ItemRequiredToEnter.ID);
 
             // We didn't find the required item in their inventory, so return "false"
-            return false;
+            // return false;
         }
 
         public bool HasThisQuest(Quest quest)
         {
-            foreach (PlayerQuest playerQuest in Quests)
-            {
-                if (playerQuest.Details.ID == quest.ID)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return Quests.Exists(pq => pq.Details.ID == quest.ID);
         }
 
         public bool CompletedThisQuest(Quest quest)
@@ -77,6 +70,7 @@ namespace Engine
 
         public bool HasAllQuestCompletionItems(Quest quest)
         {
+            /*
             // See if the player has all the items needed to complete the quest here
             foreach (QuestCompletionItem qci in quest.QuestCompletionItems)
             {
@@ -98,6 +92,18 @@ namespace Engine
 
                 // The player does not have any of this quest completion item in their inventory
                 if (!foundItemInPlayersInventory)
+                {
+                    return false;
+                }
+            }
+
+            // If we got here, then the player must have all the required items, and enough of them, to complete the quest.
+            return true; */
+            // See if the player has all the items needed to complete the quest here
+            foreach (QuestCompletionItem qci in quest.QuestCompletionItems)
+            {
+                // Check each item in the player's inventory, to see if they have it, and enough of it
+                if (!Inventory.Exists(ii => ii.Details.ID == qci.Details.ID && ii.Quantity >= qci.Quantity))
                 {
                     return false;
                 }

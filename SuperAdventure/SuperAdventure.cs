@@ -59,7 +59,6 @@ namespace SuperAdventure
             if (!_player.HasRequiredItemToEnterThisLocation(newLocation))
             {
                 rtbMessages.Text += "You must have a " + newLocation.ItemRequiredToEnter.Name + " to enter this location." + Environment.NewLine;
-                ScrollToBottomOfMessages();
                 return;
             }
 
@@ -452,7 +451,7 @@ namespace SuperAdventure
             if (_player.CurrentHitPoints <= 0)
             {
                 // player defeated
-                rtbMessages.Text += "You've been defeated!";
+                rtbMessages.Text += "You've been defeated!" + Environment.NewLine;
                 MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
             }
         }
@@ -467,12 +466,6 @@ namespace SuperAdventure
         private void label5_Click(object sender, EventArgs e)
         {
 
-        }
-        /* Function to scroll to the bottom of the rich text boax so it's easier for the player */
-        private void ScrollToBottomOfMessages()
-        {
-            rtbMessages.SelectionStart = rtbMessages.Text.Length;
-            rtbMessages.ScrollToCaret();
         }
     }
 }
