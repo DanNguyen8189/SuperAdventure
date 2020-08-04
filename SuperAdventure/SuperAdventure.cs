@@ -254,11 +254,26 @@ namespace SuperAdventure
             }
             else
             {
+                /* remove the function connected to the dropdown’s 
+                “SelectedIndexChanged event (the line with the “-=”). 
+                That’s because when you set the DataSource property of a dropdown, 
+                it automatically calls the function connected to the SelectedIndexChanged event. 
+                We don’t want that to happen. We only want that event called when the player 
+                manually changes the value. */
+                cboWeapons.SelectedIndexChanged -= cboWeapons_SelectedIndexChanged;
                 cboWeapons.DataSource = weapons;
+                cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
                 cboWeapons.DisplayMember = "Name";
                 cboWeapons.ValueMember = "ID";
 
-                cboWeapons.SelectedIndex = 0;
+                if (_player.CurrentWeapon != null)
+                {
+                    cboWeapons.SelectedItem = _player.CurrentWeapon;
+                }
+                else
+                {
+                    cboWeapons.SelectedIndex = 0;
+                }
             }
         }
 
@@ -472,11 +487,18 @@ namespace SuperAdventure
             }
         }
 
+        /* Auto-scrolls the messages box to the bottom whenever it's updated */
         private void rtbMessages_TextChanged(object sender, EventArgs e)
         {
             // auto-scroll to the bottom
             rtbMessages.SelectionStart = rtbMessages.Text.Length;
             rtbMessages.ScrollToCaret();
+        }
+        /* gets the selected item from the cboWeapons dropdown and saves it in the player’s 
+         * CurrentWeapon property.*/
+        private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
         }
 
         private void label5_Click(object sender, EventArgs e)
