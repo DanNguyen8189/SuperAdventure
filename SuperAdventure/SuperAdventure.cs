@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.IO;
 
 using Engine;
 
@@ -17,10 +18,11 @@ namespace SuperAdventure
     {
         private Player _player;
         private Monster _currentMonster;
+        private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
 
         public SuperAdventure()
         {
-            InitializeComponent();
+            /*InitializeComponent();
 
             _player = new Player(10, 10, 20, 0);
             MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
@@ -29,7 +31,21 @@ namespace SuperAdventure
             lblHitPoints.Text = _player.CurrentHitPoints.ToString();
             lblGold.Text = _player.Gold.ToString();
             lblExperience.Text = _player.ExperiencePoints.ToString();
-            lblLevel.Text = _player.Level.ToString();
+            lblLevel.Text = _player.Level.ToString();*/
+            InitializeComponent();
+
+            if (File.Exists(PLAYER_DATA_FILE_NAME))
+            {
+                _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
+            }
+            else
+            {
+                _player = Player.CreateDefaultPlayer();
+            }
+
+            MoveTo(_player.CurrentLocation);
+
+            updatePlayerStats();
         }
 
         private void btnNorth_Click(object sender, EventArgs e)
@@ -466,6 +482,17 @@ namespace SuperAdventure
         private void label5_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void SuperAdventure_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void SuperAdventure_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            /* save player data on game close */
+            File.WriteAllText(PLAYER_DATA_FILE_NAME, _player.ToXmlString());
         }
     }
 }

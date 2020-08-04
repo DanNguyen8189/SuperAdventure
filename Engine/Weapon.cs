@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Engine
 {
+    /* Weapon class */
     public class Weapon : Item
     {
         public int MinimumDamage { get; set; }
