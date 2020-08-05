@@ -43,9 +43,15 @@ namespace SuperAdventure
                 _player = Player.CreateDefaultPlayer();
             }
 
+            //Bind labels to corresponding properties
+            lblHitPoints.DataBindings.Add("Text", _player, "CurrentHitPoints");
+            lblGold.DataBindings.Add("Text", _player, "Gold");
+            lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
+            lblLevel.DataBindings.Add("Text", _player, "Level");
+
             MoveTo(_player.CurrentLocation);
 
-            updatePlayerStats();
+            //updatePlayerStats(); //don't need this here anymore since the data bindings do that for us
         }
 
         private void btnNorth_Click(object sender, EventArgs e)
@@ -95,7 +101,7 @@ namespace SuperAdventure
             _player.CurrentHitPoints = _player.MaximumHitPoints;
 
             // Update Hit Points in UI
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
+            // lblHitPoints.Text = _player.CurrentHitPoints.ToString(); // data binding takes care of this
 
             // Does the location have a quest?
             if (newLocation.QuestAvailableHere != null)
@@ -325,7 +331,7 @@ namespace SuperAdventure
             {
                 // monster defeated
                 winBattle();
-                updatePlayerStats();
+                // updatePlayerStats();
                 UpdateInventoryListInUI();
                 UpdateWeaponListInUI();
                 UpdatePotionListInUI();
@@ -458,11 +464,12 @@ namespace SuperAdventure
 
             // Mark the quest as completed
             _player.MarkQuestCompleted(newLocation.QuestAvailableHere);
-            updatePlayerStats();
+            // updatePlayerStats();
         }
     
 
-        /* Function to update player stats and inventory controls */
+        /* Function to update player stats and inventory controls. Note: this function was made unnessesary 
+         because of data bindings (that's so neat)*/
         void updatePlayerStats()
         {
             lblHitPoints.Text = _player.CurrentHitPoints.ToString();
@@ -478,7 +485,7 @@ namespace SuperAdventure
             int damageToPlayer = Engine.RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
             rtbMessages.Text += _currentMonster.Name + " attacks and deals " + damageToPlayer.ToString() + " damage!" + Environment.NewLine;
             _player.CurrentHitPoints -= damageToPlayer;
-            updatePlayerStats();
+            // updatePlayerStats();
             if (_player.CurrentHitPoints <= 0)
             {
                 // player defeated
