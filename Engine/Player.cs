@@ -9,8 +9,8 @@ namespace Engine
 {
     public class Player : LivingCreature
     {
-        public int Gold { get; set; }
-        public int ExperiencePoints { get; set; }
+        public int Gold { get; private set; }
+        public int ExperiencePoints { get; private set; }
         public int Level
         {
             get { return ((ExperiencePoints / 100) + 1); }
@@ -309,6 +309,30 @@ namespace Engine
                     return; // We found the quest, and marked it complete, so get out of this function
                 }
             }
+        }
+
+        /* Function to add experience points and increase max health if level-up*/
+        public void AddExperiencePoints(int experiencePointsToAdd)
+        {
+            ExperiencePoints += experiencePointsToAdd;
+            MaximumHitPoints = (Level * 10);
+        }
+
+        public void AddGold(int goldToAdd)
+        {
+            Gold += goldToAdd;
+            // TODO max gold?
+        }
+
+        /* Take gold from player but return false if player has insufficient funds */
+        public bool SubtractGold(int goldToSubtract)
+        {
+            if (Gold - goldToSubtract < 0)
+            {
+                return false;
+            }
+            Gold -= goldToSubtract;
+            return true;
         }
     }
 }

@@ -373,10 +373,10 @@ namespace SuperAdventure
         private void winBattle()
         {
             rtbMessages.Text += "You've defeated " + _currentMonster.Name;
-            
+
             //give player rewards
-            _player.ExperiencePoints += _currentMonster.RewardExperiencePoints;
-            _player.Gold += _currentMonster.RewardGold;
+            _player.AddExperiencePoints(_currentMonster.RewardExperiencePoints);
+            _player.AddGold(_currentMonster.RewardGold);
 
             // Collect chance loot from loot table
             List<LootItem> lootCollected = new List<LootItem>();
@@ -450,8 +450,8 @@ namespace SuperAdventure
             rtbMessages.Text += newLocation.QuestAvailableHere.RewardItem.Name + Environment.NewLine;
             rtbMessages.Text += Environment.NewLine;
 
-            _player.ExperiencePoints += newLocation.QuestAvailableHere.RewardExperiencePoints;
-            _player.Gold += newLocation.QuestAvailableHere.RewardGold;
+            _player.AddExperiencePoints(newLocation.QuestAvailableHere.RewardExperiencePoints);
+            _player.AddGold(newLocation.QuestAvailableHere.RewardGold);
 
             // Add the reward item to the player's inventory
             _player.AddItemToInventory(newLocation.QuestAvailableHere.RewardItem);
