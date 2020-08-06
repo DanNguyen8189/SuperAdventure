@@ -10,6 +10,7 @@ namespace Engine
     /*Class representing a living creature in the game (ex Players, Monsters)*/
     public class LivingCreature : INotifyPropertyChanged
     {
+        //backing variables
         private int _currentHitPoints;
 
         public int CurrentHitPoints

@@ -43,11 +43,52 @@ namespace SuperAdventure
                 _player = Player.CreateDefaultPlayer();
             }
 
-            //Bind labels to corresponding properties
+            // Bind labels to corresponding player properties (subscribe to events)
             lblHitPoints.DataBindings.Add("Text", _player, "CurrentHitPoints");
             lblGold.DataBindings.Add("Text", _player, "Gold");
             lblExperience.DataBindings.Add("Text", _player, "ExperiencePoints");
             lblLevel.DataBindings.Add("Text", _player, "Level");
+
+            // Configure dgv for inventory
+            dgvInventory.RowHeadersVisible = false;
+
+            dgvInventory.AutoGenerateColumns = false; // datagrid would create a column for each 
+            // property of InventoryItem if this was true. (We want to manually configure the columns)
+
+            // set datasource (automatically binds for events because it's a BindingList!!)
+            dgvInventory.DataSource = _player.Inventory;
+
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Width = 197,
+                DataPropertyName = "Description"
+            });
+
+            dgvInventory.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Quantity",
+                DataPropertyName = "Quantity"
+            });
+
+            //Configure dgv for player's quests
+            dgvQuests.RowHeadersVisible = false;
+            dgvQuests.AutoGenerateColumns = false;
+
+            dgvQuests.DataSource = _player.Quests;
+
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Name",
+                Width = 197,
+                DataPropertyName = "Name"
+            });
+
+            dgvQuests.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "Done?",
+                DataPropertyName = "IsCompleted"
+            });
 
             MoveTo(_player.CurrentLocation);
 
@@ -185,10 +226,10 @@ namespace SuperAdventure
             }
 
             // Refresh player's inventory list
-            UpdateInventoryListInUI();
+            // UpdateInventoryListInUI();
 
             // Refresh player's quest list
-            UpdateQuestListInUI();
+            // UpdateQuestListInUI();
 
             // Refresh player's weapons combobox
             UpdateWeaponListInUI();
@@ -197,8 +238,8 @@ namespace SuperAdventure
             UpdatePotionListInUI();
         }
 
-        /* Function to update player's inventory list UI */
-        private void UpdateInventoryListInUI()
+        /* Function to update player's inventory list UI (this was without using binding)*/
+        /*private void UpdateInventoryListInUI()
         {
             dgvInventory.RowHeadersVisible = false;
 
@@ -216,10 +257,10 @@ namespace SuperAdventure
                     dgvInventory.Rows.Add(new[] { inventoryItem.Details.Name, inventoryItem.Quantity.ToString() });
                 }
             }
-        }
+        }*/
 
-        /* Function to update quest list UI */
-        private void UpdateQuestListInUI()
+        /* Function to update quest list UI (this was without using binding)*/
+        /*private void UpdateQuestListInUI()
         {
             dgvQuests.RowHeadersVisible = false;
 
@@ -234,7 +275,7 @@ namespace SuperAdventure
             {
                 dgvQuests.Rows.Add(new[] { playerQuest.Details.Name, playerQuest.IsCompleted.ToString() });
             }
-        }
+        }*/
 
         /* Function to update weapons list UI */
         private void UpdateWeaponListInUI()
@@ -332,7 +373,7 @@ namespace SuperAdventure
                 // monster defeated
                 winBattle();
                 // updatePlayerStats();
-                UpdateInventoryListInUI();
+                // UpdateInventoryListInUI();
                 UpdateWeaponListInUI();
                 UpdatePotionListInUI();
 
