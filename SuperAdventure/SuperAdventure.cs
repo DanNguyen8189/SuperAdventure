@@ -17,7 +17,7 @@ namespace SuperAdventure
     public partial class SuperAdventure : Form
     {
         private Player _player;
-        private Monster _currentMonster;
+        // private Monster _currentMonster;
         private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
 
         public SuperAdventure()
@@ -90,33 +90,50 @@ namespace SuperAdventure
                 DataPropertyName = "IsCompleted"
             });
 
-            MoveTo(_player.CurrentLocation);
+            //Set up comboboxes for weapons and potions
+            cboWeapons.DataSource = _player.Weapons;
+            cboWeapons.DisplayMember = "Name";
+            cboWeapons.ValueMember = "ID";
+
+            if (_player.CurrentWeapon != null)
+            {
+                cboWeapons.SelectedItem = _player.CurrentWeapon;
+            }
+            cboWeapons.SelectedIndexChanged -= cboWeapons_SelectedIndexChanged;
+            cboPotions.DataSource = _player.Potions;
+            cboPotions.DisplayMember = "Name";
+            cboPotions.ValueMember = "Id";
+
+            _player.PropertyChanged += PlayerOnPropertyChanged; // watch for player property changes
+            _player.OnMessage += DisplayMessage; // watch for message events
+
+            _player.MoveTo(_player.CurrentLocation);
 
             //updatePlayerStats(); //don't need this here anymore since the data bindings do that for us
         }
 
         private void btnNorth_Click(object sender, EventArgs e)
         {
-            MoveTo(_player.CurrentLocation.LocationToNorth);
+            _player.MoveTo(_player.CurrentLocation.LocationToNorth);
         }
 
         private void btnEast_Click(object sender, EventArgs e)
         {
-            MoveTo(_player.CurrentLocation.LocationToEast);
+            _player.MoveTo(_player.CurrentLocation.LocationToEast);
         }
 
         private void btnSouth_Click(object sender, EventArgs e)
         {
-            MoveTo(_player.CurrentLocation.LocationToSouth);
+            _player.MoveTo(_player.CurrentLocation.LocationToSouth);
         }
 
         private void btnWest_Click(object sender, EventArgs e)
         {
-            MoveTo(_player.CurrentLocation.LocationToWest);
+            _player.MoveTo(_player.CurrentLocation.LocationToWest);
         }
 
         /* Function to handle player moving to new location */
-        private void MoveTo(Location newLocation)
+        /*private void MoveTo(Location newLocation)
         {
             //Does the location have any required items
             if (!_player.HasRequiredItemToEnterThisLocation(newLocation))
@@ -210,10 +227,14 @@ namespace SuperAdventure
                 }
 
                 // Prepare UI for combat
-                cboWeapons.Visible = true;
-                cboPotions.Visible = true;
-                btnUseWeapon.Visible = true;
-                btnUsePotion.Visible = true;
+                // cboWeapons.Visible = true;
+                // cboPotions.Visible = true;
+                // btnUseWeapon.Visible = true;
+                // btnUsePotion.Visible = true; 
+                cboWeapons.Visible = _player.Weapons.Any();
+                cboPotions.Visible = _player.Potions.Any();
+                btnUseWeapon.Visible = _player.Weapons.Any();
+                btnUsePotion.Visible = _player.Potions.Any();
             }
             else
             {
@@ -224,19 +245,7 @@ namespace SuperAdventure
                 btnUseWeapon.Visible = false;
                 btnUsePotion.Visible = false;
             }
-
-            // Refresh player's inventory list
-            // UpdateInventoryListInUI();
-
-            // Refresh player's quest list
-            // UpdateQuestListInUI();
-
-            // Refresh player's weapons combobox
-            UpdateWeaponListInUI();
-
-            // Refresh player's potions combobox
-            UpdatePotionListInUI();
-        }
+        } */
 
         /* Function to update player's inventory list UI (this was without using binding)*/
         /*private void UpdateInventoryListInUI()
@@ -278,7 +287,7 @@ namespace SuperAdventure
         }*/
 
         /* Function to update weapons list UI */
-        private void UpdateWeaponListInUI()
+        /*private void UpdateWeaponListInUI()
         {
             List<Weapon> weapons = new List<Weapon>();
 
@@ -301,12 +310,12 @@ namespace SuperAdventure
             }
             else
             {
-                /* remove the function connected to the dropdown’s 
-                “SelectedIndexChanged event (the line with the “-=”). 
-                That’s because when you set the DataSource property of a dropdown, 
-                it automatically calls the function connected to the SelectedIndexChanged event. 
-                We don’t want that to happen. We only want that event called when the player 
-                manually changes the value. */
+                // remove the function connected to the dropdown’s 
+                // “SelectedIndexChanged event (the line with the “-=”). 
+                // That’s because when you set the DataSource property of a dropdown, 
+                // it automatically calls the function connected to the SelectedIndexChanged event. 
+                // We don’t want that to happen. We only want that event called when the player 
+                // manually changes the value.
                 cboWeapons.SelectedIndexChanged -= cboWeapons_SelectedIndexChanged;
                 cboWeapons.DataSource = weapons;
                 cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
@@ -322,10 +331,10 @@ namespace SuperAdventure
                     cboWeapons.SelectedIndex = 0;
                 }
             }
-        }
+        }*/
 
         /* Function to update potions list UI */
-        private void UpdatePotionListInUI()
+        /*private void UpdatePotionListInUI()
         {
             List<HealingPotion> healingPotions = new List<HealingPotion>();
 
@@ -354,35 +363,35 @@ namespace SuperAdventure
 
                 cboPotions.SelectedIndex = 0;
             }
-        }
+        }*/
 
         private void btnUseWeapon_Click(object sender, EventArgs e)
         {
-            rtbMessages.Text += "Attacking " + _currentMonster.Name;
+            rtbMessages.Text += "Attacking " + _player._currentMonster.Name;
             Weapon currentWeapon = (Weapon)cboWeapons.SelectedItem; 
 
             int damageToMonster = Engine.RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
             // Apply the damage to the monster's CurrentHitPoints
-            _currentMonster.CurrentHitPoints -= damageToMonster;
+            _player._currentMonster.CurrentHitPoints -= damageToMonster;
 
             // Display message
-            rtbMessages.Text += "You hit the " + _currentMonster.Name + " for " + damageToMonster.ToString() + " points." + Environment.NewLine;
+            rtbMessages.Text += "You hit the " + _player._currentMonster.Name + " for " + damageToMonster.ToString() + " points." + Environment.NewLine;
 
-            if (_currentMonster.CurrentHitPoints <= 0)
+            if (_player._currentMonster.CurrentHitPoints <= 0)
             {
                 // monster defeated
-                winBattle();
+                _player.winBattle();
                 // updatePlayerStats();
                 // UpdateInventoryListInUI();
-                UpdateWeaponListInUI();
-                UpdatePotionListInUI();
+                // UpdateWeaponListInUI();
+                // UpdatePotionListInUI();
 
                 // Move player to current location (to heal player and create a new monster to fight)
-                MoveTo(_player.CurrentLocation);
+                _player.MoveTo(_player.CurrentLocation);
             }
             else
             {
-                MonsterAttack();
+                _player.MonsterAttack();
             }
         }
 
@@ -396,7 +405,7 @@ namespace SuperAdventure
             }
 
             // remove potion from inventory
-            for (int i = 0; i < _player.Inventory.Count; i++)
+            /*for (int i = 0; i < _player.Inventory.Count; i++)
             {
                 if (_player.Inventory[i].Details.ID == potion.ID)
                 {
@@ -410,78 +419,15 @@ namespace SuperAdventure
                     }
                     break;
                 }
-            }
+            }*/
+            _player.RemoveItemFromInventory(potion, 1);
             // Display message
             rtbMessages.Text += "You drink a " + potion.Name + Environment.NewLine;
-            UpdatePotionListInUI();
-            MonsterAttack();
+            // UpdatePotionListInUI();
+            _player.MonsterAttack();
         }
 
-        private void winBattle()
-        {
-            rtbMessages.Text += "You've defeated " + _currentMonster.Name;
-
-            //give player rewards
-            _player.AddExperiencePoints(_currentMonster.RewardExperiencePoints);
-            _player.AddGold(_currentMonster.RewardGold);
-
-            // Collect chance loot from loot table
-            List<LootItem> lootCollected = new List<LootItem>();
-            int rngNumber = 0;
-            foreach (LootItem li in _currentMonster.LootTable)
-            {
-                rngNumber = Engine.RandomNumberGenerator.NumberBetween(0, 100);
-                if (rngNumber <= li.DropPercentage)
-                {
-                    lootCollected.Add(li);
-                }
-            }
-            /* Make sure player gets at least one item */
-            if (lootCollected.Count == 0)
-            {
-                foreach (LootItem li in _currentMonster.LootTable)
-                {
-                    if (li.IsDefaultItem)
-                    {
-                        lootCollected.Add(li);
-                        break;
-                    }
-                }
-            }
-            foreach (LootItem li in lootCollected)
-            {
-                bool playerHasItem = false;
-                foreach (InventoryItem ii in _player.Inventory)
-                {
-                    if (ii.Details.ID == li.Details.ID)
-                    {
-                        ii.Quantity += 1;
-                        playerHasItem = true;
-                    }
-                }
-                if (playerHasItem == false)
-                {
-                    // player doesn't have it yet, add it to their inventory
-                    _player.Inventory.Add(new InventoryItem(li.Details, 1));
-                }
-                rtbMessages.Text += "You've received " + li.Details.Name + Environment.NewLine;
-            }
-            // If no items were randomly selected, then add the default loot item(s).
-            /*if (lootCollected.Count == 0)
-            {
-                foreach (LootItem li in _currentMonster.LootTable)
-                {
-                    if (li.IsDefaultItem)
-                    {
-                        _player.Inventory.Add(new InventoryItem(li.Details, 1));
-                        rtbMessages.Text += "You've received " + li.Details.Name;
-                        break;
-                    }
-                }
-            }*/
-        }
-
-        void completeQuest(Location newLocation)
+        /*void completeQuest(Location newLocation)
         {
             // Display message
             rtbMessages.Text += Environment.NewLine;
@@ -506,7 +452,7 @@ namespace SuperAdventure
             // Mark the quest as completed
             _player.MarkQuestCompleted(newLocation.QuestAvailableHere);
             // updatePlayerStats();
-        }
+        }*/
     
 
         /* Function to update player stats and inventory controls. Note: this function was made unnessesary 
@@ -519,21 +465,6 @@ namespace SuperAdventure
             lblLevel.Text = _player.Level.ToString();
         }
 
-        /* Function for monster attack */
-        void MonsterAttack()
-        {
-            // monster attacks
-            int damageToPlayer = Engine.RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
-            rtbMessages.Text += _currentMonster.Name + " attacks and deals " + damageToPlayer.ToString() + " damage!" + Environment.NewLine;
-            _player.CurrentHitPoints -= damageToPlayer;
-            // updatePlayerStats();
-            if (_player.CurrentHitPoints <= 0)
-            {
-                // player defeated
-                rtbMessages.Text += "You've been defeated!" + Environment.NewLine;
-                MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
-            }
-        }
 
         /* Auto-scrolls the messages box to the bottom whenever it's updated */
         private void rtbMessages_TextChanged(object sender, EventArgs e)
@@ -563,6 +494,74 @@ namespace SuperAdventure
         {
             /* save player data on game close */
             File.WriteAllText(PLAYER_DATA_FILE_NAME, _player.ToXmlString());
+        }
+
+        /* Function to update combobox when inventory changes */
+        private void PlayerOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            // propertyChangedEventArgs.PropertyName comes from
+            // Player.RaiseInventoryChangedEvent function, where it 
+            // says OnPropertyChanged(“Weapons”), or OnPropertyChanged(“Potions”).
+            if (propertyChangedEventArgs.PropertyName == "Weapons")
+            {
+                cboWeapons.DataSource = _player.Weapons;
+
+                if (!_player.Weapons.Any())
+                {
+                    cboWeapons.Visible = false;
+                    btnUseWeapon.Visible = false;
+                }
+            }
+
+            if (propertyChangedEventArgs.PropertyName == "Potions")
+            {
+                cboPotions.DataSource = _player.Potions;
+
+                if (!_player.Potions.Any())
+                {
+                    cboPotions.Visible = false;
+                    btnUsePotion.Visible = false;
+                }
+            }
+            if (propertyChangedEventArgs.PropertyName == "CurrentLocation")
+            {
+                // Show/hide available movement buttons
+                btnNorth.Visible = (_player.CurrentLocation.LocationToNorth != null);
+                btnEast.Visible = (_player.CurrentLocation.LocationToEast != null);
+                btnSouth.Visible = (_player.CurrentLocation.LocationToSouth != null);
+                btnWest.Visible = (_player.CurrentLocation.LocationToWest != null);
+
+                // Display current location name and description
+                rtbLocation.Text = _player.CurrentLocation.Name + Environment.NewLine;
+                rtbLocation.Text += _player.CurrentLocation.Description + Environment.NewLine;
+
+                if (_player.CurrentLocation.MonsterLivingHere == null)
+                {
+                    cboWeapons.Visible = false;
+                    cboPotions.Visible = false;
+                    btnUseWeapon.Visible = false;
+                    btnUsePotion.Visible = false;
+                }
+                else
+                {
+                    cboWeapons.Visible = _player.Weapons.Any();
+                    cboPotions.Visible = _player.Potions.Any();
+                    btnUseWeapon.Visible = _player.Weapons.Any();
+                    btnUsePotion.Visible = _player.Potions.Any();
+                }
+            }
+        }
+        private void DisplayMessage(object sender, MessageEventArgs messageEventArgs)
+        {
+            rtbMessages.Text += messageEventArgs.Message + Environment.NewLine;
+
+            if (messageEventArgs.AddExtraNewLine)
+            {
+                rtbMessages.Text += Environment.NewLine;
+            }
+
+            rtbMessages.SelectionStart = rtbMessages.Text.Length;
+            rtbMessages.ScrollToCaret();
         }
     }
 }
