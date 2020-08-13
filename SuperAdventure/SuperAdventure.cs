@@ -457,13 +457,13 @@ namespace SuperAdventure
 
         /* Function to update player stats and inventory controls. Note: this function was made unnessesary 
          because of data bindings (that's so neat)*/
-        void updatePlayerStats()
+        /* void updatePlayerStats()
         {
             lblHitPoints.Text = _player.CurrentHitPoints.ToString();
             lblGold.Text = _player.Gold.ToString();
             lblExperience.Text = _player.ExperiencePoints.ToString();
             lblLevel.Text = _player.Level.ToString();
-        }
+        }*/
 
 
         /* Auto-scrolls the messages box to the bottom whenever it's updated */
@@ -496,7 +496,7 @@ namespace SuperAdventure
             File.WriteAllText(PLAYER_DATA_FILE_NAME, _player.ToXmlString());
         }
 
-        /* Function to update combobox when inventory changes */
+        /* Function to update comboboxes when inventory changes */
         private void PlayerOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             // propertyChangedEventArgs.PropertyName comes from
@@ -551,6 +551,7 @@ namespace SuperAdventure
                 }
             }
         }
+        /* Function to display message on UI if we get the notification for it */
         private void DisplayMessage(object sender, MessageEventArgs messageEventArgs)
         {
             rtbMessages.Text += messageEventArgs.Message + Environment.NewLine;
