@@ -12,6 +12,7 @@ namespace Engine
         public int ID { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public Vendor VendorWorkingHere { get; set; }
 
         public Item ItemRequiredToEnter { get; set; }
         public Quest QuestAvailableHere { get; set; }
