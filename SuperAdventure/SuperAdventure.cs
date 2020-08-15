@@ -549,6 +549,8 @@ namespace SuperAdventure
                     btnUseWeapon.Visible = _player.Weapons.Any();
                     btnUsePotion.Visible = _player.Potions.Any();
                 }
+
+                btnTrade.Visible = (_player.CurrentLocation.VendorWorkingHere != null);
             }
         }
         /* Function to display message on UI if we get the notification for it */
@@ -563,6 +565,14 @@ namespace SuperAdventure
 
             rtbMessages.SelectionStart = rtbMessages.Text.Length;
             rtbMessages.ScrollToCaret();
+        }
+
+        /* Event handler for trade button calls this in Designer.cs*/
+        private void btnTrade_Click(object sender, EventArgs e)
+        {
+            TradingScreen tradingScreen = new TradingScreen(_player);
+            tradingScreen.StartPosition = FormStartPosition.CenterParent;
+            tradingScreen.ShowDialog(this); //makes the trading screen display itself
         }
     }
 }

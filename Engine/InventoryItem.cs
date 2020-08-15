@@ -34,10 +34,21 @@ namespace Engine
                 OnPropertyChanged("Description");
             }
         }
+
         public String Description
         {
             get { return Quantity > 1 ? Details.NamePlural : Details.Name; }
         }
+        public int ItemID
+        {
+            get { return Details.ID; }
+        }
+
+        public int Price
+        {
+            get { return Details.Price; }
+        }
+
         public InventoryItem(Item details, int quantity)
         {
             Details = details;
